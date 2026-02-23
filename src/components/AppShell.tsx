@@ -16,7 +16,7 @@ export default function AppShell({ children, title }: { children: React.ReactNod
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth/login');
+      router.push('/demo');
     }
   }, [user, loading, router]);
 

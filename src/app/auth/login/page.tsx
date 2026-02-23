@@ -96,6 +96,12 @@ export default function LoginPage() {
             Create one
           </Link>
         </p>
+        <p className="text-center mt-3 text-gray-500 text-sm">
+          Need a fast walkthrough?{' '}
+          <Link href="/demo" className="text-[#FCD34D] hover:text-white transition-colors font-medium">
+            Enter demo accounts
+          </Link>
+        </p>
       </div>
     </div>
   );

@@ -13,21 +13,42 @@ interface CoinPackage {
   popular: number;
 }
 
+const demoPackages: CoinPackage[] = [
+  { id: 'demo-mini', name: 'Mini Pack', coins: 50, price: 4.99, bonus_coins: 5, popular: 0 },
+  { id: 'demo-plus', name: 'Plus Pack', coins: 120, price: 9.99, bonus_coins: 20, popular: 1 },
+  { id: 'demo-max', name: 'Max Pack', coins: 300, price: 19.99, bonus_coins: 70, popular: 0 },
+];
+
 export default function ShopPage() {
-  const { user, setCoins } = useAuth();
+  const { user, setCoins, isDemoMode } = useAuth();
   const [packages, setPackages] = useState<CoinPackage[]>([]);
   const [buying, setBuying] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const isGuest = user?.role === 'guest';
 
   useEffect(() => {
+    if (isDemoMode) {
+      setPackages(demoPackages);
+      return;
+    }
+
     fetch('/api/coins/buy')
       .then(res => res.json())
       .then(data => setPackages(data.packages || []))
       .catch(() => {});
-  }, []);
+  }, [isDemoMode]);
 
   const handleBuy = async (pkg: CoinPackage) => {
     if (buying) return;
+    if (isGuest) return;
+
+    if (isDemoMode) {
+      const current = user?.coins ?? 0;
+      setCoins(current + pkg.coins + pkg.bonus_coins);
+      setSuccess(`Demo purchase complete: +${pkg.coins + pkg.bonus_coins} coins`);
+      return;
+    }
+
     setBuying(pkg.id);
     setSuccess(null);
 
@@ -71,6 +92,12 @@ export default function ShopPage() {
           <div className="text-xs text-gray-500 mt-1">Genie Coins</div>
         </div>
 
+        {isGuest && (
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+            Guest mode is read-only. Switch to Buyer in demo accounts to purchase coins.
+          </div>
+        )}
+
         {success && (
           <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-xl p-3 text-center count-up">
             🎉 {success}
@@ -106,10 +133,10 @@ export default function ShopPage() {
                   </div>
                   <button
                     onClick={() => handleBuy(pkg)}
-                    disabled={buying === pkg.id}
-                    className={`genie-btn-gold genie-btn px-5 py-2.5 text-sm whitespace-nowrap ${buying === pkg.id ? 'opacity-50' : ''}`}
+                    disabled={buying === pkg.id || isGuest}
+                    className={`genie-btn-gold genie-btn px-5 py-2.5 text-sm whitespace-nowrap ${(buying === pkg.id || isGuest) ? 'opacity-50' : ''}`}
                   >
-                    {buying === pkg.id ? '...' : `$${pkg.price.toFixed(2)}`}
+                    {isGuest ? 'Read-only' : buying === pkg.id ? '...' : `$${pkg.price.toFixed(2)}`}
                   </button>
                 </div>
               </div>

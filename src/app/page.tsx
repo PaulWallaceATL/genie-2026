@@ -62,6 +62,9 @@ export default function LandingPage() {
       </div>
 
       <div className="w-full max-w-sm space-y-3">
+        <Link href="/demo" className="genie-btn-gold genie-btn block w-full text-center text-lg py-4">
+          Enter Demo
+        </Link>
         <Link href="/auth/register" className="genie-btn block w-full text-center text-lg py-4">
           Get Started Free
         </Link>

@@ -2,9 +2,22 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Play, ShoppingCart, Gavel, User } from 'lucide-react';
+import {
+  Home,
+  Play,
+  ShoppingCart,
+  Gavel,
+  User,
+  Package,
+  ClipboardList,
+  Wallet,
+  ShieldAlert,
+  Users,
+  Settings,
+} from 'lucide-react';
+import { useAuth } from '@/store/useAuth';
 
-const navItems = [
+const buyerNavItems = [
   { href: '/dashboard', label: 'Home', icon: Home },
   { href: '/watch', label: 'Watch', icon: Play },
   { href: '/shop', label: 'Shop', icon: ShoppingCart },
@@ -12,8 +25,30 @@ const navItems = [
   { href: '/profile', label: 'Profile', icon: User },
 ];
 
+const sellerNavItems = [
+  { href: '/seller', label: 'Home', icon: Home },
+  { href: '/seller/listings', label: 'Listings', icon: Package },
+  { href: '/seller/orders', label: 'Orders', icon: ClipboardList },
+  { href: '/seller/payouts', label: 'Payouts', icon: Wallet },
+  { href: '/profile', label: 'Profile', icon: User },
+];
+
+const adminNavItems = [
+  { href: '/admin', label: 'Home', icon: Home },
+  { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/auctions', label: 'Auctions', icon: Gavel },
+  { href: '/admin/reports', label: 'Reports', icon: ShieldAlert },
+  { href: '/admin/settings', label: 'Settings', icon: Settings },
+];
+
 export default function BottomNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const navItems =
+    user?.role === 'admin' ? adminNavItems :
+    user?.role === 'seller' ? sellerNavItems :
+    buyerNavItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"

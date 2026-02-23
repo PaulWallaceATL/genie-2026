@@ -111,6 +111,12 @@ export default function RegisterPage() {
             Sign in
           </Link>
         </p>
+        <p className="text-center mt-3 text-gray-500 text-sm">
+          Need a fast walkthrough?{' '}
+          <Link href="/demo" className="text-[#FCD34D] hover:text-white transition-colors font-medium">
+            Enter demo accounts
+          </Link>
+        </p>
       </div>
     </div>
   );

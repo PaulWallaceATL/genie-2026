@@ -17,16 +17,57 @@ interface Auction {
   status: string;
 }
 
+const demoAuctions: Auction[] = [
+  {
+    id: 'd1',
+    title: 'iPhone 17 Pro',
+    current_price: 24.61,
+    retail_price: 1299,
+    total_bids: 2461,
+    ends_at: '',
+    timer_seconds: 0,
+    last_bidder_name: 'Taylor K',
+    status: 'active',
+  },
+  {
+    id: 'd2',
+    title: 'PlayStation 6 Bundle',
+    current_price: 15.37,
+    retail_price: 699,
+    total_bids: 1537,
+    ends_at: '',
+    timer_seconds: 0,
+    last_bidder_name: 'Jordan P',
+    status: 'active',
+  },
+  {
+    id: 'd3',
+    title: 'MacBook Air M6',
+    current_price: 40.12,
+    retail_price: 1199,
+    total_bids: 4012,
+    ends_at: '',
+    timer_seconds: 0,
+    last_bidder_name: 'Ava B',
+    status: 'active',
+  },
+];
+
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isDemoMode } = useAuth();
   const [auctions, setAuctions] = useState<Auction[]>([]);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setAuctions(demoAuctions);
+      return;
+    }
+
     fetch('/api/auctions')
       .then(res => res.json())
       .then(data => setAuctions(data.auctions?.slice(0, 3) || []))
-      .catch(() => {});
-  }, []);
+      .catch(() => setAuctions(demoAuctions));
+  }, [isDemoMode]);
 
   return (
     <AppShell title="Dashboard">

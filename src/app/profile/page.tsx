@@ -13,20 +13,42 @@ interface Transaction {
   created_at: string;
 }
 
+const demoTransactions: Transaction[] = [
+  {
+    id: 't-demo-1',
+    type: 'ad_reward',
+    amount: 2,
+    description: 'Watched sponsored demo ad',
+    created_at: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+  },
+  {
+    id: 't-demo-2',
+    type: 'bid',
+    amount: -1,
+    description: 'Placed bid on PlayStation 6 Bundle',
+    created_at: new Date(Date.now() - 1000 * 60 * 50).toISOString(),
+  },
+];
+
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isDemoMode } = useAuth();
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showTransactions, setShowTransactions] = useState(false);
 
   useEffect(() => {
     if (showTransactions) {
+      if (isDemoMode) {
+        setTransactions(demoTransactions);
+        return;
+      }
+
       fetch('/api/transactions')
         .then(res => res.json())
         .then(data => setTransactions(data.transactions || []))
         .catch(() => {});
     }
-  }, [showTransactions]);
+  }, [isDemoMode, showTransactions]);
 
   const handleLogout = async () => {
     await logout();

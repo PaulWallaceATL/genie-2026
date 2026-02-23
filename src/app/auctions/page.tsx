@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
 
@@ -19,6 +20,54 @@ interface Auction {
   ends_at: string;
   timer_seconds: number;
 }
+
+const getDemoAuctions = (): Auction[] => [
+  {
+    id: 'demo-auction-1',
+    title: 'iPhone 17 Pro',
+    description: '256GB, factory unlocked',
+    retail_price: 1299,
+    current_price: 24.61,
+    bid_increment: 0.01,
+    bid_cost: 2,
+    total_bids: 2461,
+    last_bidder_id: null,
+    last_bidder_name: 'Taylor K',
+    status: 'active',
+    ends_at: new Date(Date.now() + 11 * 60 * 1000).toISOString(),
+    timer_seconds: 660,
+  },
+  {
+    id: 'demo-auction-2',
+    title: 'PlayStation 6 Bundle',
+    description: 'Console + two controllers',
+    retail_price: 699,
+    current_price: 15.37,
+    bid_increment: 0.01,
+    bid_cost: 1,
+    total_bids: 1537,
+    last_bidder_id: null,
+    last_bidder_name: 'Jordan P',
+    status: 'active',
+    ends_at: new Date(Date.now() + 8 * 60 * 1000).toISOString(),
+    timer_seconds: 480,
+  },
+  {
+    id: 'demo-auction-3',
+    title: 'Dyson V18 Vacuum',
+    description: 'Smart cleaning set',
+    retail_price: 549,
+    current_price: 0,
+    bid_increment: 0.01,
+    bid_cost: 1,
+    total_bids: 0,
+    last_bidder_id: null,
+    last_bidder_name: null,
+    status: 'upcoming',
+    ends_at: new Date(Date.now() + 70 * 60 * 1000).toISOString(),
+    timer_seconds: 4200,
+  },
+];
 
 function CountdownTimer({ endsAt }: { endsAt: string }) {
   const [timeLeft, setTimeLeft] = useState('');
@@ -64,12 +113,18 @@ function CountdownTimer({ endsAt }: { endsAt: string }) {
 }
 
 export default function AuctionsPage() {
-  const { user, setCoins } = useAuth();
+  const { user, setCoins, isDemoMode } = useAuth();
   const [auctions, setAuctions] = useState<Auction[]>([]);
   const [bidding, setBidding] = useState<string | null>(null);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+  const isGuest = user?.role === 'guest';
 
   const fetchAuctions = useCallback(async () => {
+    if (isDemoMode) {
+      setAuctions(getDemoAuctions());
+      return;
+    }
+
     try {
       const res = await fetch('/api/auctions');
       const data = await res.json();
@@ -77,7 +132,7 @@ export default function AuctionsPage() {
     } catch {
       // ignore
     }
-  }, []);
+  }, [isDemoMode]);
 
   useEffect(() => {
     fetchAuctions();
@@ -87,6 +142,35 @@ export default function AuctionsPage() {
 
   const handleBid = async (auctionId: string) => {
     if (bidding) return;
+    if (isGuest) {
+      setMessage({ text: 'Guest mode is read-only. Switch to Buyer in Demo Accounts.', type: 'error' });
+      return;
+    }
+
+    if (isDemoMode) {
+      const selected = auctions.find((a) => a.id === auctionId);
+      if (!selected || !user) return;
+      if (user.coins < selected.bid_cost) {
+        setMessage({ text: 'Not enough demo coins for this bid.', type: 'error' });
+        return;
+      }
+
+      setCoins(user.coins - selected.bid_cost);
+      setAuctions((prev) => prev.map((auction) => {
+        if (auction.id !== auctionId) return auction;
+        return {
+          ...auction,
+          current_price: Number((auction.current_price + auction.bid_increment).toFixed(2)),
+          total_bids: auction.total_bids + 1,
+          last_bidder_id: user.id,
+          last_bidder_name: user.username,
+          ends_at: new Date(Date.now() + 60 * 1000).toISOString(),
+        };
+      }));
+      setMessage({ text: 'Demo bid placed successfully.', type: 'success' });
+      return;
+    }
+
     setBidding(auctionId);
     setMessage(null);
 
@@ -140,6 +224,12 @@ export default function AuctionsPage() {
         )}
 
         {/* Active Auctions */}
+        {isGuest && (
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+            Guest mode is read-only. Switch to Buyer in <Link href="/demo" className="underline">Demo Accounts</Link> to place bids.
+          </div>
+        )}
+
         {activeAuctions.length > 0 && (
           <div>
             <h3 className="text-lg font-bold text-white mb-3">🔴 Live Auctions</h3>
@@ -197,14 +287,16 @@ export default function AuctionsPage() {
                       {/* Bid Button */}
                       <button
                         onClick={() => handleBid(auction.id)}
-                        disabled={bidding === auction.id}
+                        disabled={bidding === auction.id || isGuest}
                         className={`w-full py-3.5 rounded-xl font-bold text-base transition-all ${
-                          bidding === auction.id
+                          bidding === auction.id || isGuest
                             ? 'bg-[#241B35] text-gray-500'
                             : 'genie-btn pulse-glow'
                         }`}
                       >
-                        {bidding === auction.id
+                        {isGuest
+                          ? 'Guest Mode (Read-only)'
+                          : bidding === auction.id
                           ? 'Placing bid...'
                           : `🪙 Bid Now (${auction.bid_cost} coin${auction.bid_cost > 1 ? 's' : ''})`}
                       </button>

@@ -16,13 +16,14 @@ const mockAds = [
 ];
 
 export default function WatchPage() {
-  const { user, setCoins, fetchUser } = useAuth();
+  const { user, setCoins, setAdsWatched, isDemoMode } = useAuth();
   const [watching, setWatching] = useState(false);
   const [progress, setProgress] = useState(0);
   const [cooldown, setCooldown] = useState(0);
   const [reward, setReward] = useState<number | null>(null);
   const [currentAd, setCurrentAd] = useState(0);
   const [totalEarned, setTotalEarned] = useState(0);
+  const isGuest = user?.role === 'guest';
 
   useEffect(() => {
     if (cooldown > 0) {
@@ -48,6 +49,18 @@ export default function WatchPage() {
   }, [watching, progress]);
 
   const claimReward = useCallback(async () => {
+    if (isDemoMode) {
+      const earned = 2;
+      setReward(earned);
+      setCoins((user?.coins ?? 0) + earned);
+      setAdsWatched((user?.total_ads_watched ?? 0) + 1);
+      setTotalEarned((prev) => prev + earned);
+      setCooldown(10);
+      setWatching(false);
+      setProgress(0);
+      return;
+    }
+
     try {
       const res = await fetch('/api/coins/watch-ad', { method: 'POST' });
       const data = await res.json();
@@ -66,7 +79,7 @@ export default function WatchPage() {
       setWatching(false);
       setProgress(0);
     }
-  }, [setCoins]);
+  }, [isDemoMode, setAdsWatched, setCoins, user?.coins, user?.total_ads_watched]);
 
   useEffect(() => {
     if (progress >= 100 && watching) {
@@ -75,7 +88,7 @@ export default function WatchPage() {
   }, [progress, watching, claimReward]);
 
   const startWatching = () => {
-    if (watching || cooldown > 0) return;
+    if (watching || cooldown > 0 || isGuest) return;
     setReward(null);
     setCurrentAd(Math.floor(Math.random() * mockAds.length));
     setWatching(true);
@@ -158,18 +171,26 @@ export default function WatchPage() {
         </div>
 
         {/* Watch Button */}
+        {isGuest && (
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+            Guest mode is read-only. Switch to Buyer in demo accounts to earn coins.
+          </div>
+        )}
+
         <button
           onClick={startWatching}
-          disabled={watching || cooldown > 0}
+          disabled={watching || cooldown > 0 || isGuest}
           className={`w-full py-4 rounded-2xl font-bold text-lg transition-all duration-300 ${
-            watching
+            watching || isGuest
               ? 'bg-[#241B35] text-gray-500 cursor-not-allowed'
               : cooldown > 0
               ? 'bg-[#241B35] text-gray-400 cursor-not-allowed'
               : 'genie-btn pulse-glow'
           }`}
         >
-          {watching
+          {isGuest
+            ? 'Guest Mode (Read-only)'
+            : watching
             ? '⏳ Watching...'
             : cooldown > 0
             ? `⏱️ Wait ${cooldown}s`
