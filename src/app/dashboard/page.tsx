@@ -1,0 +1,117 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import AppShell from '@/components/AppShell';
+import { useAuth } from '@/store/useAuth';
+
+interface Auction {
+  id: string;
+  title: string;
+  current_price: number;
+  retail_price: number;
+  total_bids: number;
+  ends_at: string;
+  timer_seconds: number;
+  last_bidder_name: string | null;
+  status: string;
+}
+
+export default function DashboardPage() {
+  const { user } = useAuth();
+  const [auctions, setAuctions] = useState<Auction[]>([]);
+
+  useEffect(() => {
+    fetch('/api/auctions')
+      .then(res => res.json())
+      .then(data => setAuctions(data.auctions?.slice(0, 3) || []))
+      .catch(() => {});
+  }, []);
+
+  return (
+    <AppShell title="Dashboard">
+      <div className="max-w-lg mx-auto space-y-6 py-4">
+        {/* Welcome */}
+        <div className="genie-card p-5">
+          <h2 className="text-xl font-bold text-white mb-1">
+            Hey, {user?.username}! 👋
+          </h2>
+          <p className="text-gray-400 text-sm">Ready to win something amazing today?</p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="genie-card p-4 text-center">
+            <div className="text-2xl mb-1">🪙</div>
+            <div className="text-2xl font-bold text-[#FCD34D] count-up">
+              {user?.coins?.toLocaleString() ?? 0}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Genie Coins</div>
+          </div>
+          <div className="genie-card p-4 text-center">
+            <div className="text-2xl mb-1">📺</div>
+            <div className="text-2xl font-bold text-[#A78BFA] count-up">
+              {user?.total_ads_watched ?? 0}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Ads Watched</div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <Link href="/watch" className="genie-btn text-center py-4 block">
+            <div className="text-xl mb-1">▶️</div>
+            <div className="text-sm font-semibold">Watch Ads</div>
+            <div className="text-xs opacity-70">Earn 2 coins each</div>
+          </Link>
+          <Link href="/shop" className="genie-btn genie-btn-gold text-center py-4 block">
+            <div className="text-xl mb-1">💰</div>
+            <div className="text-sm font-semibold">Buy Coins</div>
+            <div className="text-xs opacity-70">Get bonus coins</div>
+          </Link>
+        </div>
+
+        {/* Hot Auctions */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-bold text-white">🔥 Hot Auctions</h3>
+            <Link href="/auctions" className="text-sm text-[#A78BFA] hover:text-white transition-colors">
+              View all →
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {auctions.map(auction => (
+              <Link key={auction.id} href="/auctions" className="genie-card p-4 flex items-center gap-4 block">
+                <div className="w-12 h-12 rounded-xl bg-[#241B35] flex items-center justify-center text-2xl">
+                  🎁
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-white text-sm truncate">{auction.title}</h4>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[#FCD34D] font-bold text-sm">
+                      ${auction.current_price.toFixed(2)}
+                    </span>
+                    <span className="text-gray-500 text-xs line-through">
+                      ${auction.retail_price.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">{auction.total_bids} bids</div>
+                  {auction.last_bidder_name && (
+                    <div className="text-xs text-[#A78BFA] mt-0.5">{auction.last_bidder_name}</div>
+                  )}
+                </div>
+              </Link>
+            ))}
+            {auctions.length === 0 && (
+              <div className="genie-card p-6 text-center text-gray-400">
+                <p>Loading auctions...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </AppShell>
+  );
+}

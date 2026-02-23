@@ -1,0 +1,22 @@
+{
+  "name": "Genie - Watch, Earn & Win",
+  "short_name": "Genie",
+  "description": "Watch ads to earn Genie Coins and win amazing prizes in penny auctions!",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0F0A1A",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
