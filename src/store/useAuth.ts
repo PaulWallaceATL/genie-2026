@@ -8,6 +8,7 @@ interface User {
   username: string;
   coins: number;
   total_ads_watched: number;
+  created_at?: string;
 }
 
 interface AuthState {
