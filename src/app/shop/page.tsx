@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { CircleHelp, Coins, Crown, Gem, Sparkles, Trophy, Wallet } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
+import { IconChip } from '@/components/BrandIcons';
 
 interface CoinPackage {
   id: string;
@@ -72,9 +74,9 @@ export default function ShopPage() {
     }
   };
 
-  const getPackageEmoji = (index: number) => {
-    const emojis = ['🪙', '💰', '👑', '💎', '🏆'];
-    return emojis[index] || '🪙';
+  const getPackageIcon = (index: number) => {
+    const icons = [Coins, Wallet, Crown, Gem, Trophy];
+    return icons[index] || Coins;
   };
 
   return (
@@ -84,7 +86,7 @@ export default function ShopPage() {
         <div className="genie-card p-5 text-center">
           <div className="text-sm text-gray-400 mb-1">Your Balance</div>
           <div className="flex items-center justify-center gap-2">
-            <span className="text-3xl">🪙</span>
+            <IconChip icon={Coins} tone="gold" />
             <span className="text-3xl font-bold text-[#FCD34D]">
               {user?.coins?.toLocaleString() ?? 0}
             </span>
@@ -100,13 +102,19 @@ export default function ShopPage() {
 
         {success && (
           <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-xl p-3 text-center count-up">
-            🎉 {success}
+            <span className="inline-flex items-center gap-2">
+              <Sparkles size={15} />
+              {success}
+            </span>
           </div>
         )}
 
         {/* Packages */}
         <div>
-          <h3 className="text-lg font-bold text-white mb-3">💰 Coin Packages</h3>
+          <h3 className="text-lg font-bold text-white mb-3 inline-flex items-center gap-2">
+            <Wallet size={18} className="text-[#FCD34D]" />
+            Coin Packages
+          </h3>
           <div className="space-y-3">
             {packages.map((pkg, index) => (
               <div
@@ -119,7 +127,7 @@ export default function ShopPage() {
                   </div>
                 )}
                 <div className="flex items-center gap-4">
-                  <div className="text-3xl">{getPackageEmoji(index)}</div>
+                  <IconChip icon={getPackageIcon(index)} tone={pkg.popular ? 'gold' : 'purple'} />
                   <div className="flex-1">
                     <h4 className="font-bold text-white">{pkg.name}</h4>
                     <div className="flex items-center gap-2 mt-0.5">
@@ -146,7 +154,10 @@ export default function ShopPage() {
 
         {/* Info */}
         <div className="genie-card p-4">
-          <h4 className="font-semibold text-white text-sm mb-2">ℹ️ About Purchases</h4>
+          <h4 className="font-semibold text-white text-sm mb-2 inline-flex items-center gap-2">
+            <CircleHelp size={16} className="text-[#A78BFA]" />
+            About Purchases
+          </h4>
           <ul className="space-y-1.5 text-xs text-gray-400">
             <li>• Coins are added to your account instantly</li>
             <li>• Bonus coins are included at no extra cost</li>

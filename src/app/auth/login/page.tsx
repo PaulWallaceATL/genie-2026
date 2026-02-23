@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/store/useAuth';
+import { GenieLogo } from '@/components/BrandIcons';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -43,9 +44,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm genie-card p-6">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-4">🧞</div>
+          <GenieLogo size="md" className="mx-auto mb-4" />
           <h1 className="text-2xl font-bold gradient-text">Welcome Back</h1>
           <p className="text-gray-400 text-sm mt-1">Sign in to your Genie account</p>
         </div>

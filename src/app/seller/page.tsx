@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { Banknote, Package, ReceiptText, Wallet } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import RoleGate from '@/components/RoleGate';
+import { IconChip } from '@/components/BrandIcons';
 
 const sellerStats = [
-  { label: 'Active Listings', value: 8, icon: '📦' },
-  { label: 'Pending Orders', value: 3, icon: '🧾' },
-  { label: 'This Month Revenue', value: '$1,842', icon: '💵' },
-  { label: 'Payouts Ready', value: '$640', icon: '🏦' },
+  { label: 'Active Listings', value: 8, icon: Package },
+  { label: 'Pending Orders', value: 3, icon: ReceiptText },
+  { label: 'This Month Revenue', value: '$1,842', icon: Banknote },
+  { label: 'Payouts Ready', value: '$640', icon: Wallet },
 ];
 
 export default function SellerDashboardPage() {
@@ -26,7 +28,9 @@ export default function SellerDashboardPage() {
           <div className="grid grid-cols-2 gap-3">
             {sellerStats.map((item) => (
               <div key={item.label} className="genie-card p-4 text-center">
-                <div className="text-2xl mb-1">{item.icon}</div>
+                <div className="mb-2 flex justify-center">
+                  <IconChip icon={item.icon} size="sm" tone="slate" />
+                </div>
                 <div className="text-lg font-bold text-white">{item.value}</div>
                 <div className="text-xs text-gray-400 mt-1">{item.label}</div>
               </div>

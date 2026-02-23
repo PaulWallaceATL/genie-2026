@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { Gift, Search, ShieldCheck, Siren, Timer, Trophy } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
+import { IconChip } from '@/components/BrandIcons';
 
 interface Auction {
   id: string;
@@ -206,7 +208,9 @@ export default function AuctionsPage() {
       <div className="max-w-lg mx-auto space-y-6 py-4">
         {/* Header */}
         <div className="genie-card p-5 text-center">
-          <div className="text-3xl mb-2">🏆</div>
+          <div className="mb-2 flex justify-center">
+            <IconChip icon={Trophy} tone="gold" />
+          </div>
           <h2 className="text-xl font-bold text-white">Penny Auctions</h2>
           <p className="text-gray-400 text-sm mt-1">
             Each bid costs coins and raises the price by $0.01
@@ -232,7 +236,10 @@ export default function AuctionsPage() {
 
         {activeAuctions.length > 0 && (
           <div>
-            <h3 className="text-lg font-bold text-white mb-3">🔴 Live Auctions</h3>
+            <h3 className="text-lg font-bold text-white mb-3 inline-flex items-center gap-2">
+              <Siren size={18} className="text-red-300" />
+              Live Auctions
+            </h3>
             <div className="space-y-4">
               {activeAuctions.map(auction => {
                 const savings = Math.round((1 - auction.current_price / auction.retail_price) * 100);
@@ -278,8 +285,13 @@ export default function AuctionsPage() {
                       <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
                         <span>{auction.total_bids} total bids</span>
                         {auction.last_bidder_name && (
-                          <span className={isMyBid ? 'text-green-400 font-medium' : 'text-[#A78BFA]'}>
-                            {isMyBid ? '✅ You are winning!' : `Last: ${auction.last_bidder_name}`}
+                          <span className={isMyBid ? 'text-green-400 font-medium inline-flex items-center gap-1' : 'text-[#A78BFA]'}>
+                            {isMyBid ? (
+                              <>
+                                <ShieldCheck size={13} />
+                                You are winning!
+                              </>
+                            ) : `Last: ${auction.last_bidder_name}`}
                           </span>
                         )}
                       </div>
@@ -298,7 +310,7 @@ export default function AuctionsPage() {
                           ? 'Guest Mode (Read-only)'
                           : bidding === auction.id
                           ? 'Placing bid...'
-                          : `🪙 Bid Now (${auction.bid_cost} coin${auction.bid_cost > 1 ? 's' : ''})`}
+                          : `Bid Now (${auction.bid_cost} coin${auction.bid_cost > 1 ? 's' : ''})`}
                       </button>
                     </div>
                   </div>
@@ -311,13 +323,16 @@ export default function AuctionsPage() {
         {/* Upcoming */}
         {upcomingAuctions.length > 0 && (
           <div>
-            <h3 className="text-lg font-bold text-white mb-3">⏰ Coming Soon</h3>
+            <h3 className="text-lg font-bold text-white mb-3 inline-flex items-center gap-2">
+              <Timer size={18} className="text-[#A78BFA]" />
+              Coming Soon
+            </h3>
             <div className="space-y-3">
               {upcomingAuctions.map(auction => (
                 <div key={auction.id} className="genie-card p-4 opacity-70">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#241B35] flex items-center justify-center text-2xl">
-                      🎁
+                    <div className="w-12 h-12 rounded-xl bg-[#241B35] flex items-center justify-center">
+                      <Gift size={22} className="text-[#C4B5FD]" />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-white">{auction.title}</h4>
@@ -337,7 +352,9 @@ export default function AuctionsPage() {
 
         {auctions.length === 0 && (
           <div className="genie-card p-8 text-center">
-            <div className="text-4xl mb-3">🔍</div>
+            <div className="mb-3 flex justify-center">
+              <IconChip icon={Search} size="lg" tone="slate" />
+            </div>
             <p className="text-gray-400">Loading auctions...</p>
           </div>
         )}

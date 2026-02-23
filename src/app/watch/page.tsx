@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { CircleDashed, Coins, PlayCircle, Sparkles, Target, Tv } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
+import { IconChip } from '@/components/BrandIcons';
 
 const AD_DURATION = 5; // seconds for mock ad
 
@@ -102,12 +104,14 @@ export default function WatchPage() {
       <div className="max-w-lg mx-auto space-y-6 py-4">
         {/* Earnings Summary */}
         <div className="genie-card p-5 text-center">
-          <div className="text-3xl mb-2">📺</div>
+          <div className="mb-2 flex justify-center">
+            <IconChip icon={Tv} tone="purple" />
+          </div>
           <h2 className="text-xl font-bold text-white">Watch Ads, Earn Coins</h2>
           <p className="text-gray-400 text-sm mt-1">Each ad earns you 2 Genie Coins</p>
           {totalEarned > 0 && (
             <div className="mt-3 inline-flex items-center gap-1.5 bg-[#241B35] rounded-full px-4 py-1.5">
-              <span>🪙</span>
+              <Coins size={14} className="text-[#FCD34D]" />
               <span className="text-[#FCD34D] font-bold">{totalEarned} earned this session</span>
             </div>
           )}
@@ -119,7 +123,9 @@ export default function WatchPage() {
             <div>
               {/* Mock Ad Display */}
               <div className={`bg-gradient-to-br ${ad.color} p-8 text-center`}>
-                <div className="text-4xl mb-3">🎯</div>
+                <div className="mb-3 flex justify-center">
+                  <IconChip icon={Target} tone="slate" />
+                </div>
                 <h3 className="text-xl font-bold text-white">{ad.title}</h3>
                 <p className="text-white/70 text-sm mt-1">by {ad.brand}</p>
                 <div className="mt-4 bg-white/20 rounded-full px-4 py-2 inline-block">
@@ -151,7 +157,9 @@ export default function WatchPage() {
             <div className="p-8 text-center">
               {reward !== null ? (
                 <div className="count-up">
-                  <div className="text-5xl mb-3">🎉</div>
+                  <div className="mb-3 flex justify-center">
+                    <IconChip icon={Sparkles} size="lg" tone="green" />
+                  </div>
                   <h3 className="text-xl font-bold text-white">You earned {reward} coins!</h3>
                   <p className="text-gray-400 text-sm mt-1">
                     Your balance: {user?.coins?.toLocaleString()} coins
@@ -159,7 +167,9 @@ export default function WatchPage() {
                 </div>
               ) : (
                 <div>
-                  <div className="text-5xl mb-3 float-animation">▶️</div>
+                  <div className="mb-3 flex justify-center">
+                    <IconChip icon={PlayCircle} size="lg" tone="purple" className="float-animation" />
+                  </div>
                   <h3 className="text-lg font-bold text-white">Ready to watch?</h3>
                   <p className="text-gray-400 text-sm mt-1">
                     Watch a short ad to earn Genie Coins
@@ -191,15 +201,18 @@ export default function WatchPage() {
           {isGuest
             ? 'Guest Mode (Read-only)'
             : watching
-            ? '⏳ Watching...'
+            ? 'Watching...'
             : cooldown > 0
-            ? `⏱️ Wait ${cooldown}s`
-            : '▶️ Watch Ad (+2 Coins)'}
+            ? `Wait ${cooldown}s`
+            : 'Watch Ad (+2 Coins)'}
         </button>
 
         {/* Info */}
         <div className="genie-card p-4">
-          <h4 className="font-semibold text-white text-sm mb-2">💡 Tips</h4>
+          <h4 className="font-semibold text-white text-sm mb-2 inline-flex items-center gap-2">
+            <CircleDashed size={16} className="text-[#A78BFA]" />
+            Tips
+          </h4>
           <ul className="space-y-1.5 text-xs text-gray-400">
             <li>• Watch the full ad to receive your coins</li>
             <li>• There&apos;s a short cooldown between ads</li>

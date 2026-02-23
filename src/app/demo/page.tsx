@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Eye, Package, Shield, ShoppingBag, FlaskConical } from 'lucide-react';
 import { useAuth, type UserRole } from '@/store/useAuth';
+import { IconChip } from '@/components/BrandIcons';
 
 const demoCards: Array<{
   role: UserRole;
   title: string;
   subtitle: string;
-  emoji: string;
+  icon: typeof Eye;
   destination: string;
   perks: string[];
 }> = [
@@ -16,7 +18,7 @@ const demoCards: Array<{
     role: 'guest',
     title: 'Guest',
     subtitle: 'Read-only storefront preview',
-    emoji: '👀',
+    icon: Eye,
     destination: '/dashboard',
     perks: ['Browse auctions', 'Preview pages', 'No purchases/bids'],
   },
@@ -24,7 +26,7 @@ const demoCards: Array<{
     role: 'buyer',
     title: 'Buyer',
     subtitle: 'Shop, watch ads, and bid',
-    emoji: '🛍️',
+    icon: ShoppingBag,
     destination: '/dashboard',
     perks: ['Spend coins', 'Watch ads', 'Join auctions'],
   },
@@ -32,7 +34,7 @@ const demoCards: Array<{
     role: 'seller',
     title: 'Seller',
     subtitle: 'Manage listings and payouts',
-    emoji: '📦',
+    icon: Package,
     destination: '/seller',
     perks: ['View listings', 'Create draft listing', 'Track payouts'],
   },
@@ -40,7 +42,7 @@ const demoCards: Array<{
     role: 'admin',
     title: 'Admin',
     subtitle: 'Moderation and operations',
-    emoji: '🛡️',
+    icon: Shield,
     destination: '/admin',
     perks: ['Review users', 'Audit auctions', 'System overview'],
   },
@@ -59,7 +61,9 @@ export default function DemoPage() {
     <div className="min-h-screen px-6 py-10">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🧪</div>
+          <div className="mb-3 flex justify-center">
+            <IconChip icon={FlaskConical} size="lg" tone="purple" />
+          </div>
           <h1 className="text-3xl font-bold gradient-text">Choose a Demo Account</h1>
           <p className="text-gray-400 mt-2">
             Click any role to jump into a full demo flow. No database setup required.
@@ -74,7 +78,7 @@ export default function DemoPage() {
               className="genie-card p-5 text-left hover:border-[#A78BFA]/50 transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="text-3xl">{card.emoji}</div>
+                <IconChip icon={card.icon} tone="slate" />
                 <span className="text-xs uppercase tracking-wide text-[#A78BFA]">{card.role}</span>
               </div>
               <h2 className="text-lg font-bold text-white">{card.title}</h2>

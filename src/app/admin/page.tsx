@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
+import { Flag, Radio, Shield, Users } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import RoleGate from '@/components/RoleGate';
+import { IconChip } from '@/components/BrandIcons';
 
 const adminStats = [
-  { label: 'Active Users', value: '14,284', icon: '👥' },
-  { label: 'Live Auctions', value: '63', icon: '🔴' },
-  { label: 'Open Reports', value: '12', icon: '🚩' },
-  { label: 'Queued Reviews', value: '7', icon: '🛡️' },
+  { label: 'Active Users', value: '14,284', icon: Users },
+  { label: 'Live Auctions', value: '63', icon: Radio },
+  { label: 'Open Reports', value: '12', icon: Flag },
+  { label: 'Queued Reviews', value: '7', icon: Shield },
 ];
 
 export default function AdminDashboardPage() {
@@ -26,7 +28,9 @@ export default function AdminDashboardPage() {
           <div className="grid grid-cols-2 gap-3">
             {adminStats.map((item) => (
               <div key={item.label} className="genie-card p-4 text-center">
-                <div className="text-2xl mb-1">{item.icon}</div>
+                <div className="mb-2 flex justify-center">
+                  <IconChip icon={item.icon} size="sm" tone="slate" />
+                </div>
                 <div className="text-lg font-bold text-white">{item.value}</div>
                 <div className="text-xs text-gray-400 mt-1">{item.label}</div>
               </div>

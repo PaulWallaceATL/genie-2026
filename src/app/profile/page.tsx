@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ChevronDown, ChevronUp, Coins, Hammer, History, RotateCcw, Sparkles, Tv, Trophy, Wallet } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
+import { IconChip } from '@/components/BrandIcons';
 
 interface Transaction {
   id: string;
@@ -35,19 +37,15 @@ export default function ProfilePage() {
   const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showTransactions, setShowTransactions] = useState(false);
+  const visibleTransactions = isDemoMode ? demoTransactions : transactions;
 
   useEffect(() => {
-    if (showTransactions) {
-      if (isDemoMode) {
-        setTransactions(demoTransactions);
-        return;
-      }
+    if (!showTransactions || isDemoMode) return;
 
-      fetch('/api/transactions')
-        .then(res => res.json())
-        .then(data => setTransactions(data.transactions || []))
-        .catch(() => {});
-    }
+    fetch('/api/transactions')
+      .then(res => res.json())
+      .then(data => setTransactions(data.transactions || []))
+      .catch(() => {});
   }, [isDemoMode, showTransactions]);
 
   const handleLogout = async () => {
@@ -57,12 +55,12 @@ export default function ProfilePage() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'ad_reward': return '📺';
-      case 'purchase': return '💰';
-      case 'bid': return '🔨';
-      case 'auction_win': return '🏆';
-      case 'refund': return '↩️';
-      default: return '🪙';
+      case 'ad_reward': return Tv;
+      case 'purchase': return Wallet;
+      case 'bid': return Hammer;
+      case 'auction_win': return Trophy;
+      case 'refund': return RotateCcw;
+      default: return Coins;
     }
   };
 
@@ -88,12 +86,16 @@ export default function ProfilePage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
           <div className="genie-card p-4 text-center">
-            <div className="text-2xl mb-1">🪙</div>
+            <div className="mb-2 flex justify-center">
+              <IconChip icon={Coins} size="sm" tone="gold" />
+            </div>
             <div className="text-2xl font-bold text-[#FCD34D]">{user?.coins?.toLocaleString() ?? 0}</div>
             <div className="text-xs text-gray-400 mt-1">Genie Coins</div>
           </div>
           <div className="genie-card p-4 text-center">
-            <div className="text-2xl mb-1">📺</div>
+            <div className="mb-2 flex justify-center">
+              <IconChip icon={Tv} size="sm" tone="purple" />
+            </div>
             <div className="text-2xl font-bold text-[#A78BFA]">{user?.total_ads_watched ?? 0}</div>
             <div className="text-xs text-gray-400 mt-1">Ads Watched</div>
           </div>
@@ -106,22 +108,24 @@ export default function ProfilePage() {
             className="w-full genie-card p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
-              <span className="text-xl">📋</span>
+              <IconChip icon={History} size="sm" tone="slate" />
               <span className="font-semibold text-white">Transaction History</span>
             </div>
-            <span className="text-gray-400 text-sm">{showTransactions ? '▲' : '▼'}</span>
+            <span className="text-gray-400 text-sm">
+              {showTransactions ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </span>
           </button>
 
           {showTransactions && (
             <div className="mt-2 space-y-2">
-              {transactions.length === 0 ? (
+              {visibleTransactions.length === 0 ? (
                 <div className="genie-card p-4 text-center text-gray-400 text-sm">
                   No transactions yet
                 </div>
               ) : (
-                transactions.map(tx => (
+                visibleTransactions.map(tx => (
                   <div key={tx.id} className="genie-card p-3 flex items-center gap-3">
-                    <span className="text-xl">{getTypeIcon(tx.type)}</span>
+                    <IconChip icon={getTypeIcon(tx.type)} size="sm" tone={tx.amount > 0 ? 'green' : 'red'} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-white truncate">{tx.description}</p>
                       <p className="text-xs text-gray-500">
@@ -149,7 +153,10 @@ export default function ProfilePage() {
         </div>
 
         <p className="text-center text-xs text-gray-600">
-          Genie v1.0.0 • Made with 🧞
+          <span className="inline-flex items-center gap-1">
+            <Sparkles size={12} />
+            Genie v1.0.0
+          </span>
         </p>
       </div>
     </AppShell>
