@@ -5,6 +5,7 @@ import { CircleDashed, Coins, PlayCircle, Sparkles, Target, Tv } from 'lucide-re
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
 import { IconChip } from '@/components/BrandIcons';
+import { InfoBanner, PageHero, PageWrap, SectionCard, SectionTitle } from '@/components/PageBits';
 
 const AD_DURATION = 5; // seconds for mock ad
 
@@ -101,21 +102,17 @@ export default function WatchPage() {
 
   return (
     <AppShell title="Watch & Earn">
-      <div className="max-w-lg mx-auto space-y-6 py-4">
+      <PageWrap>
         {/* Earnings Summary */}
-        <div className="genie-card p-5 text-center">
-          <div className="mb-2 flex justify-center">
-            <IconChip icon={Tv} tone="purple" />
-          </div>
-          <h2 className="text-xl font-bold text-white">Watch Ads, Earn Coins</h2>
-          <p className="text-gray-400 text-sm mt-1">Each ad earns you 2 Genie Coins</p>
-          {totalEarned > 0 && (
-            <div className="mt-3 inline-flex items-center gap-1.5 bg-[#241B35] rounded-full px-4 py-1.5">
+        <PageHero title="Watch Ads, Earn Coins" subtitle="Each ad earns you 2 Genie Coins" icon={Tv} tone="purple" />
+        {totalEarned > 0 && (
+          <div className="text-center -mt-3">
+            <div className="inline-flex items-center gap-1.5 bg-[#241B35] rounded-full px-4 py-1.5">
               <Coins size={14} className="text-[#FCD34D]" />
               <span className="text-[#FCD34D] font-bold">{totalEarned} earned this session</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Ad Player */}
         <div className="genie-card overflow-hidden">
@@ -182,9 +179,9 @@ export default function WatchPage() {
 
         {/* Watch Button */}
         {isGuest && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+          <InfoBanner tone="amber">
             Guest mode is read-only. Switch to Buyer in demo accounts to earn coins.
-          </div>
+          </InfoBanner>
         )}
 
         <button
@@ -208,19 +205,16 @@ export default function WatchPage() {
         </button>
 
         {/* Info */}
-        <div className="genie-card p-4">
-          <h4 className="font-semibold text-white text-sm mb-2 inline-flex items-center gap-2">
-            <CircleDashed size={16} className="text-[#A78BFA]" />
-            Tips
-          </h4>
+        <SectionCard className="p-4">
+          <SectionTitle title="Tips" icon={CircleDashed} />
           <ul className="space-y-1.5 text-xs text-gray-400">
             <li>• Watch the full ad to receive your coins</li>
             <li>• There&apos;s a short cooldown between ads</li>
             <li>• Use your coins to bid in penny auctions</li>
             <li>• The more you watch, the more you can bid!</li>
           </ul>
-        </div>
-      </div>
+        </SectionCard>
+      </PageWrap>
     </AppShell>
   );
 }

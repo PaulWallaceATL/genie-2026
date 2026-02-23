@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AppShell from '@/components/AppShell';
 import RoleGate from '@/components/RoleGate';
+import { PageWrap, SectionCard, StatusPill } from '@/components/PageBits';
 
 const reports = [
   { id: 'r-9001', subject: 'Suspicious rapid bids', target: 'Auction a-2002', priority: 'High' },
@@ -16,16 +17,21 @@ export default function AdminReportsPage() {
   return (
     <AppShell title="Reports">
       <RoleGate allowedRoles={['admin']}>
-        <div className="max-w-lg mx-auto py-4 space-y-3">
+        <PageWrap className="space-y-3">
           {reports.map((report) => {
             const isResolved = resolved.includes(report.id);
             return (
-              <div key={report.id} className="genie-card p-4">
+              <SectionCard key={report.id} className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="font-semibold text-white">{report.subject}</h3>
                     <p className="text-xs text-gray-400 mt-1">{report.target}</p>
-                    <p className="text-xs text-[#A78BFA] mt-1">Priority: {report.priority}</p>
+                    <div className="mt-1">
+                      <StatusPill
+                        text={`Priority: ${report.priority}`}
+                        tone={report.priority === 'High' ? 'red' : report.priority === 'Medium' ? 'amber' : 'purple'}
+                      />
+                    </div>
                   </div>
                   <button
                     onClick={() => !isResolved && setResolved((prev) => [...prev, report.id])}
@@ -37,10 +43,10 @@ export default function AdminReportsPage() {
                     {isResolved ? 'Resolved' : 'Resolve'}
                   </button>
                 </div>
-              </div>
+              </SectionCard>
             );
           })}
-        </div>
+        </PageWrap>
       </RoleGate>
     </AppShell>
   );

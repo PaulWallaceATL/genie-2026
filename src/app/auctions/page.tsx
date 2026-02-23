@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Gift, Search, ShieldCheck, Siren, Timer, Trophy } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
-import { IconChip } from '@/components/BrandIcons';
+import { EmptyState, InfoBanner, PageHero, PageWrap, StatusPill } from '@/components/PageBits';
 
 interface Auction {
   id: string;
@@ -205,33 +205,26 @@ export default function AuctionsPage() {
 
   return (
     <AppShell title="Auctions">
-      <div className="max-w-lg mx-auto space-y-6 py-4">
+      <PageWrap>
         {/* Header */}
-        <div className="genie-card p-5 text-center">
-          <div className="mb-2 flex justify-center">
-            <IconChip icon={Trophy} tone="gold" />
-          </div>
-          <h2 className="text-xl font-bold text-white">Penny Auctions</h2>
-          <p className="text-gray-400 text-sm mt-1">
-            Each bid costs coins and raises the price by $0.01
-          </p>
-        </div>
+        <PageHero
+          title="Penny Auctions"
+          subtitle="Each bid costs coins and raises the price by $0.01"
+          icon={Trophy}
+          tone="gold"
+        />
 
         {message && (
-          <div className={`text-sm rounded-xl p-3 text-center count-up ${
-            message.type === 'success'
-              ? 'bg-green-500/10 border border-green-500/30 text-green-400'
-              : 'bg-red-500/10 border border-red-500/30 text-red-400'
-          }`}>
+          <InfoBanner tone={message.type === 'success' ? 'green' : 'red'}>
             {message.text}
-          </div>
+          </InfoBanner>
         )}
 
         {/* Active Auctions */}
         {isGuest && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+          <InfoBanner tone="amber">
             Guest mode is read-only. Switch to Buyer in <Link href="/demo" className="underline">Demo Accounts</Link> to place bids.
-          </div>
+          </InfoBanner>
         )}
 
         {activeAuctions.length > 0 && (
@@ -340,9 +333,7 @@ export default function AuctionsPage() {
                         Retail: ${auction.retail_price.toFixed(2)}
                       </div>
                     </div>
-                    <div className="bg-[#241B35] text-[#A78BFA] text-xs font-medium px-3 py-1.5 rounded-full">
-                      Soon
-                    </div>
+                    <StatusPill text="Soon" tone="purple" />
                   </div>
                 </div>
               ))}
@@ -351,14 +342,9 @@ export default function AuctionsPage() {
         )}
 
         {auctions.length === 0 && (
-          <div className="genie-card p-8 text-center">
-            <div className="mb-3 flex justify-center">
-              <IconChip icon={Search} size="lg" tone="slate" />
-            </div>
-            <p className="text-gray-400">Loading auctions...</p>
-          </div>
+          <EmptyState icon={Search} title="Loading auctions..." subtitle="Checking live and upcoming rooms." />
         )}
-      </div>
+      </PageWrap>
     </AppShell>
   );
 }

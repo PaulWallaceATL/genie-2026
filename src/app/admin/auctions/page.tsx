@@ -2,6 +2,7 @@
 
 import AppShell from '@/components/AppShell';
 import RoleGate from '@/components/RoleGate';
+import { PageWrap, SectionCard, StatusPill } from '@/components/PageBits';
 
 const auctionChecks = [
   { id: 'a-2001', title: 'MacBook Air M6', status: 'Live', integrity: 'Healthy' },
@@ -13,9 +14,9 @@ export default function AdminAuctionsPage() {
   return (
     <AppShell title="Auction Ops">
       <RoleGate allowedRoles={['admin']}>
-        <div className="max-w-lg mx-auto py-4 space-y-3">
+        <PageWrap className="space-y-3">
           {auctionChecks.map((auction) => (
-            <div key={auction.id} className="genie-card p-4">
+            <SectionCard key={auction.id} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <h3 className="font-semibold text-white">{auction.title}</h3>
@@ -23,13 +24,14 @@ export default function AdminAuctionsPage() {
                     {auction.id} • {auction.status}
                   </p>
                 </div>
-                <span className="text-xs bg-[#241B35] text-[#A78BFA] px-2 py-1 rounded-full">
-                  {auction.integrity}
-                </span>
+                <StatusPill
+                  text={auction.integrity}
+                  tone={auction.integrity === 'Healthy' ? 'green' : auction.integrity.includes('Pending') ? 'amber' : 'red'}
+                />
               </div>
-            </div>
+            </SectionCard>
           ))}
-        </div>
+        </PageWrap>
       </RoleGate>
     </AppShell>
   );

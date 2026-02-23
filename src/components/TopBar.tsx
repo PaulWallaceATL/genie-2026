@@ -9,15 +9,15 @@ export default function TopBar({ title }: { title?: string }) {
   const { user } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between border-b border-white/5 backdrop-blur-sm"
+    <header className="sticky top-0 z-40 px-4 py-3 flex items-center justify-between border-b border-white/10 backdrop-blur-md"
       style={{ background: 'linear-gradient(to bottom, #0F0A1A, rgba(15, 10, 26, 0.95))' }}>
       <div className="flex items-center gap-3">
         <GenieLogo size="sm" />
-        <h1 className="text-lg font-bold gradient-text">
+        <h1 className="text-base sm:text-lg font-bold gradient-text truncate max-w-[55vw]">
           {title || 'Genie'}
         </h1>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         {user?.demo && (
           <Link
             href="/demo"

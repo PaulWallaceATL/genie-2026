@@ -53,7 +53,7 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"
       style={{ background: 'linear-gradient(to top, #0F0A1A, rgba(15, 10, 26, 0.95))' }}>
-      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-2">
+      <div className="flex items-center justify-around max-w-lg mx-auto px-2 py-2 border-t border-white/10">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
           const Icon = item.icon;

@@ -5,6 +5,7 @@ import { CircleHelp, Coins, Crown, Gem, Sparkles, Trophy, Wallet } from 'lucide-
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
 import { IconChip } from '@/components/BrandIcons';
+import { InfoBanner, PageHero, PageWrap, SectionCard, SectionTitle, StatusPill } from '@/components/PageBits';
 
 interface CoinPackage {
   id: string;
@@ -81,9 +82,10 @@ export default function ShopPage() {
 
   return (
     <AppShell title="Coin Shop">
-      <div className="max-w-lg mx-auto space-y-6 py-4">
+      <PageWrap>
         {/* Balance */}
-        <div className="genie-card p-5 text-center">
+        <PageHero title="Coin Shop" subtitle="Top up your balance and unlock more bidding power." icon={Wallet} tone="gold" />
+        <SectionCard className="text-center -mt-3">
           <div className="text-sm text-gray-400 mb-1">Your Balance</div>
           <div className="flex items-center justify-center gap-2">
             <IconChip icon={Coins} tone="gold" />
@@ -92,21 +94,21 @@ export default function ShopPage() {
             </span>
           </div>
           <div className="text-xs text-gray-500 mt-1">Genie Coins</div>
-        </div>
+        </SectionCard>
 
         {isGuest && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm rounded-xl p-3 text-center">
+          <InfoBanner tone="amber">
             Guest mode is read-only. Switch to Buyer in demo accounts to purchase coins.
-          </div>
+          </InfoBanner>
         )}
 
         {success && (
-          <div className="bg-green-500/10 border border-green-500/30 text-green-400 text-sm rounded-xl p-3 text-center count-up">
+          <InfoBanner tone="green">
             <span className="inline-flex items-center gap-2">
               <Sparkles size={15} />
               {success}
             </span>
-          </div>
+          </InfoBanner>
         )}
 
         {/* Packages */}
@@ -122,8 +124,8 @@ export default function ShopPage() {
                 className={`genie-card p-4 relative ${pkg.popular ? 'border-[#F59E0B]/50 ring-1 ring-[#F59E0B]/20' : ''}`}
               >
                 {pkg.popular === 1 && (
-                  <div className="absolute -top-2.5 left-4 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white text-xs font-bold px-3 py-0.5 rounded-full">
-                    MOST POPULAR
+                  <div className="absolute -top-2.5 left-4">
+                    <StatusPill text="MOST POPULAR" tone="amber" />
                   </div>
                 )}
                 <div className="flex items-center gap-4">
@@ -153,19 +155,16 @@ export default function ShopPage() {
         </div>
 
         {/* Info */}
-        <div className="genie-card p-4">
-          <h4 className="font-semibold text-white text-sm mb-2 inline-flex items-center gap-2">
-            <CircleHelp size={16} className="text-[#A78BFA]" />
-            About Purchases
-          </h4>
+        <SectionCard className="p-4">
+          <SectionTitle title="About Purchases" icon={CircleHelp} />
           <ul className="space-y-1.5 text-xs text-gray-400">
             <li>• Coins are added to your account instantly</li>
             <li>• Bonus coins are included at no extra cost</li>
             <li>• Use coins to bid in penny auctions</li>
             <li>• Payments are processed securely via Stripe</li>
           </ul>
-        </div>
-      </div>
+        </SectionCard>
+      </PageWrap>
     </AppShell>
   );
 }

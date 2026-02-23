@@ -30,6 +30,11 @@
   box-sizing: border-box;
 }
 
+*:focus-visible {
+  outline: 2px solid rgba(167, 139, 250, 0.95);
+  outline-offset: 2px;
+}
+
 body {
   background: var(--genie-dark);
   color: #E2E8F0;
@@ -112,10 +117,12 @@ body {
   transition: all 0.3s ease;
 }
 
-.genie-card:hover {
-  border-color: rgba(124, 58, 237, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
+@media (hover: hover) and (pointer: fine) {
+  .genie-card:hover {
+    border-color: rgba(124, 58, 237, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(124, 58, 237, 0.15);
+  }
 }
 
 .genie-btn {
@@ -154,4 +161,15 @@ body {
 
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

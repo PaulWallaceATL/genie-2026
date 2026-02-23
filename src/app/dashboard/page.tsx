@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Coins, Flame, Gift, PlayCircle, ShoppingBag, Tv, ChevronRight } from 'lucide-react';
+import { Coins, Flame, Gift, Tv, ChevronRight } from 'lucide-react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
-import { IconChip } from '@/components/BrandIcons';
+import { ActionTile, EmptyState, PageHero, PageWrap, StatTile } from '@/components/PageBits';
 
 interface Auction {
   id: string;
@@ -71,53 +71,20 @@ export default function DashboardPage() {
 
   return (
     <AppShell title="Dashboard">
-      <div className="max-w-lg mx-auto space-y-6 py-4">
+      <PageWrap>
         {/* Welcome */}
-        <div className="genie-card p-5 bg-gradient-to-r from-[#7C3AED]/10 to-transparent">
-          <h2 className="text-xl font-bold text-white mb-1">
-            Hey, {user?.username}
-          </h2>
-          <p className="text-gray-400 text-sm">Ready to win something amazing today?</p>
-        </div>
+        <PageHero title={`Hey, ${user?.username}`} subtitle="Ready to win something amazing today?" />
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="genie-card p-4 text-center">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={Coins} size="sm" tone="gold" />
-            </div>
-            <div className="text-2xl font-bold text-[#FCD34D] count-up">
-              {user?.coins?.toLocaleString() ?? 0}
-            </div>
-            <div className="text-xs text-gray-400 mt-1">Genie Coins</div>
-          </div>
-          <div className="genie-card p-4 text-center">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={Tv} size="sm" tone="purple" />
-            </div>
-            <div className="text-2xl font-bold text-[#A78BFA] count-up">
-              {user?.total_ads_watched ?? 0}
-            </div>
-            <div className="text-xs text-gray-400 mt-1">Ads Watched</div>
-          </div>
+          <StatTile label="Genie Coins" value={user?.coins?.toLocaleString() ?? 0} icon={Coins} tone="gold" />
+          <StatTile label="Ads Watched" value={user?.total_ads_watched ?? 0} icon={Tv} tone="purple" />
         </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
-          <Link href="/watch" className="genie-btn text-center py-4 block">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={PlayCircle} size="sm" tone="slate" />
-            </div>
-            <div className="text-sm font-semibold">Watch Ads</div>
-            <div className="text-xs opacity-70">Earn 2 coins each</div>
-          </Link>
-          <Link href="/shop" className="genie-btn genie-btn-gold text-center py-4 block">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={ShoppingBag} size="sm" tone="slate" />
-            </div>
-            <div className="text-sm font-semibold">Buy Coins</div>
-            <div className="text-xs opacity-70">Get bonus coins</div>
-          </Link>
+          <ActionTile href="/watch" title="Watch Ads" subtitle="Earn 2 coins each" />
+          <ActionTile href="/shop" title="Buy Coins" subtitle="Get bonus coins" gold />
         </div>
 
         {/* Hot Auctions */}
@@ -159,13 +126,11 @@ export default function DashboardPage() {
               </Link>
             ))}
             {visibleAuctions.length === 0 && (
-              <div className="genie-card p-6 text-center text-gray-400">
-                <p>Loading auctions...</p>
-              </div>
+              <EmptyState title="Loading auctions..." subtitle="Finding the hottest live deals for you." />
             )}
           </div>
         </div>
-      </div>
+      </PageWrap>
     </AppShell>
   );
 }

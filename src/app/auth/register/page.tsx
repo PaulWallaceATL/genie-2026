@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/store/useAuth';
-import { GenieLogo } from '@/components/BrandIcons';
+import AuthCardLayout from '@/components/AuthCardLayout';
+import { FieldInput, FieldLabel, InfoBanner } from '@/components/PageBits';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -44,40 +45,42 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm genie-card p-6">
-        <div className="text-center mb-8">
-          <GenieLogo size="md" className="mx-auto mb-4" />
-          <h1 className="text-2xl font-bold gradient-text">Create Account</h1>
-          <p className="text-gray-400 text-sm mt-1">Join Genie and start winning!</p>
-        </div>
-
+    <AuthCardLayout
+      title="Create Account"
+      subtitle="Join Genie and start winning!"
+      footer={
+        <p className="text-center mt-6 text-gray-400 text-sm">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="text-[#A78BFA] hover:text-white transition-colors font-medium">
+            Sign in
+          </Link>
+        </p>
+      }
+    >
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl p-3 text-center">
+            <InfoBanner tone="red">
               {error}
-            </div>
+            </InfoBanner>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
-            <input
+            <FieldLabel>Email</FieldLabel>
+            <FieldInput
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-[#1A1128] border border-[#7C3AED]/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7C3AED]/60 transition-colors"
               placeholder="you@example.com"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
-            <input
+            <FieldLabel>Username</FieldLabel>
+            <FieldInput
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-[#1A1128] border border-[#7C3AED]/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7C3AED]/60 transition-colors"
               placeholder="genie_master"
               required
               minLength={3}
@@ -85,12 +88,11 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
-            <input
+            <FieldLabel>Password</FieldLabel>
+            <FieldInput
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#1A1128] border border-[#7C3AED]/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#7C3AED]/60 transition-colors"
               placeholder="At least 6 characters"
               required
               minLength={6}
@@ -105,20 +107,6 @@ export default function RegisterPage() {
             {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
-
-        <p className="text-center mt-6 text-gray-400 text-sm">
-          Already have an account?{' '}
-          <Link href="/auth/login" className="text-[#A78BFA] hover:text-white transition-colors font-medium">
-            Sign in
-          </Link>
-        </p>
-        <p className="text-center mt-3 text-gray-500 text-sm">
-          Need a fast walkthrough?{' '}
-          <Link href="/demo" className="text-[#FCD34D] hover:text-white transition-colors font-medium">
-            Enter demo accounts
-          </Link>
-        </p>
-      </div>
-    </div>
+    </AuthCardLayout>
   );
 }

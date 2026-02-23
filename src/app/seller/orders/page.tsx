@@ -2,6 +2,7 @@
 
 import AppShell from '@/components/AppShell';
 import RoleGate from '@/components/RoleGate';
+import { PageWrap, SectionCard, StatusPill } from '@/components/PageBits';
 
 const orders = [
   { id: 'o1002', item: 'PlayStation 6 Bundle', buyer: 'Ava B', amount: '$422.16', status: 'Awaiting Shipment' },
@@ -13,9 +14,9 @@ export default function SellerOrdersPage() {
   return (
     <AppShell title="Orders">
       <RoleGate allowedRoles={['seller']}>
-        <div className="max-w-lg mx-auto py-4 space-y-3">
+        <PageWrap className="space-y-3">
           {orders.map((order) => (
-            <div key={order.id} className="genie-card p-4">
+            <SectionCard key={order.id} className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold text-white">{order.item}</h3>
@@ -25,12 +26,23 @@ export default function SellerOrdersPage() {
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-[#FCD34D]">{order.amount}</div>
-                  <div className="text-xs text-[#A78BFA] mt-1">{order.status}</div>
+                  <div className="mt-1">
+                    <StatusPill
+                      text={order.status}
+                      tone={
+                        order.status === 'Delivered'
+                          ? 'green'
+                          : order.status === 'Shipped'
+                          ? 'purple'
+                          : 'amber'
+                      }
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            </SectionCard>
           ))}
-        </div>
+        </PageWrap>
       </RoleGate>
     </AppShell>
   );

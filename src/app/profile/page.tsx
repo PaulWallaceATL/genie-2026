@@ -6,6 +6,7 @@ import { ChevronDown, ChevronUp, Coins, Hammer, History, RotateCcw, Sparkles, Tv
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/store/useAuth';
 import { IconChip } from '@/components/BrandIcons';
+import { EmptyState, PageWrap, SectionCard, StatTile } from '@/components/PageBits';
 
 interface Transaction {
   id: string;
@@ -70,9 +71,9 @@ export default function ProfilePage() {
 
   return (
     <AppShell title="Profile">
-      <div className="max-w-lg mx-auto space-y-6 py-4">
+      <PageWrap>
         {/* Profile Card */}
-        <div className="genie-card p-6 text-center">
+        <SectionCard className="p-6 text-center">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#F59E0B] flex items-center justify-center text-3xl mx-auto mb-3">
             {user?.username?.charAt(0).toUpperCase()}
           </div>
@@ -81,24 +82,12 @@ export default function ProfilePage() {
           <p className="text-gray-500 text-xs mt-1">
             Member since {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'today'}
           </p>
-        </div>
+        </SectionCard>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="genie-card p-4 text-center">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={Coins} size="sm" tone="gold" />
-            </div>
-            <div className="text-2xl font-bold text-[#FCD34D]">{user?.coins?.toLocaleString() ?? 0}</div>
-            <div className="text-xs text-gray-400 mt-1">Genie Coins</div>
-          </div>
-          <div className="genie-card p-4 text-center">
-            <div className="mb-2 flex justify-center">
-              <IconChip icon={Tv} size="sm" tone="purple" />
-            </div>
-            <div className="text-2xl font-bold text-[#A78BFA]">{user?.total_ads_watched ?? 0}</div>
-            <div className="text-xs text-gray-400 mt-1">Ads Watched</div>
-          </div>
+          <StatTile label="Genie Coins" value={user?.coins?.toLocaleString() ?? 0} icon={Coins} tone="gold" />
+          <StatTile label="Ads Watched" value={user?.total_ads_watched ?? 0} icon={Tv} tone="purple" />
         </div>
 
         {/* Transaction History */}
@@ -119,9 +108,7 @@ export default function ProfilePage() {
           {showTransactions && (
             <div className="mt-2 space-y-2">
               {visibleTransactions.length === 0 ? (
-                <div className="genie-card p-4 text-center text-gray-400 text-sm">
-                  No transactions yet
-                </div>
+                <EmptyState title="No transactions yet" subtitle="Watch ads or place bids to see activity here." />
               ) : (
                 visibleTransactions.map(tx => (
                   <div key={tx.id} className="genie-card p-3 flex items-center gap-3">
@@ -158,7 +145,7 @@ export default function ProfilePage() {
             Genie v1.0.0
           </span>
         </p>
-      </div>
+      </PageWrap>
     </AppShell>
   );
 }
